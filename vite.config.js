@@ -13,43 +13,34 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "0.0.0.0",
     port: 8080,
+
+    // ✅ Allow access from Cloudflare tunnel or any domain
     allowedHosts: [
-      "localhost",
-      "127.0.0.1",
-      // Allow any Render subdomain automatically
-      ".onrender.com",
-      "crypto-tracker-h3h5.onrender.com", // ✅ your Render domain explicitly
+      'michigan-leader-graduated-employees.trycloudflare.com', // your tunnel domain
+      '.trycloudflare.com', // allow all trycloudflare subdomains
+      'localhost',
+      '127.0.0.1'
     ],
+
     proxy: {
-      // Proxy all API requests starting with /api to btcindia
-      "/api": {
-        target: "https://btcindia.vercel.app",
-        changeOrigin: true,
-        secure: true,
-        rewrite: (path) => path.replace(/^\/api/, "/api"),
-      },
-      // Proxy all API requests starting with /api-usdt to usdtttindia
-      "/api-usdt": {
-        target: "https://usdtttindia.vercel.app",
-        changeOrigin: true,
-        secure: true,
-        rewrite: (path) => path.replace(/^\/api-usdt/, "/api"),
-      },
       "/api-evm": {
-        target: "https://btcindia.vercel.app",
+        target: "http://localhost:3000",
         changeOrigin: true,
-        secure: true,
+        secure: false,
         rewrite: (path) => path.replace(/^\/api-evm/, "/api"),
       },
+      "/api-ai": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api-ai/, "/api-ai"),
+      },
+      "/api": {
+        target: "http://localhost:4000",
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, "/api"),
+      },
     },
-  },
-  preview: {
-    port: 8080,
-    allowedHosts: [
-      "localhost",
-      "127.0.0.1",
-      ".onrender.com", // wildcard for all Render deployments
-      "crypto-tracker-h3h5.onrender.com", // ✅ allow your Render app in preview mode
-    ],
   },
 }));
