@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig(() => ({
   plugins: [react(), componentTagger()],
   resolve: {
     alias: {
@@ -16,35 +16,35 @@ export default defineConfig(({ mode }) => ({
     allowedHosts: [
       "localhost",
       "127.0.0.1",
-      "crypto-tracker-h3h5.onrender.com", // ✅ your Render domain explicitly
+      "crypto-tracker-h3h5.onrender.com", // your Render app host
     ],
     proxy: {
+      // 🔗 Wallet + USDT + EVM APIs
       "/api": {
-        target: "https://btcindia.vercel.app",
+        target: "http://localhost:3000",
         changeOrigin: true,
-        secure: true,
-        rewrite: (path) => path.replace(/^\/api/, "/api"),
       },
       "/api-usdt": {
-        target: "https://usdtttindia.vercel.app",
+        target: "http://localhost:3000",
         changeOrigin: true,
-        secure: true,
-        rewrite: (path) => path.replace(/^\/api-usdt/, "/api"),
       },
       "/api-evm": {
-        target: "https://btcindia.vercel.app",
+        target: "http://localhost:3000",
         changeOrigin: true,
-        secure: true,
-        rewrite: (path) => path.replace(/^\/api-evm/, "/api"),
+      },
+
+      // 🔗 NEW: Gemini AI routes
+      "/api-ai": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
       },
     },
   },
   preview: {
-    port: 8080,
     allowedHosts: [
       "localhost",
       "127.0.0.1",
-      "crypto-tracker-h3h5.onrender.com", // ✅ allow your Render app in preview mode
+      "crypto-tracker-h3h5.onrender.com",
     ],
   },
 }));
