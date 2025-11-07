@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 
+export const config = {
+  matcher: "/api/:path*",
+  runtime: "edge", // ✅ Tells Vercel to deploy as Edge Function
+};
+
 export function middleware(request) {
-  // Handle CORS preflight requests for all /api routes
   if (request.method === "OPTIONS") {
     const preflight = new NextResponse(null, { status: 200 });
     preflight.headers.set("Access-Control-Allow-Origin", "*");
@@ -16,7 +20,3 @@ export function middleware(request) {
   response.headers.set("Access-Control-Allow-Headers", "Content-Type");
   return response;
 }
-
-export const config = {
-  matcher: "/api/:path*",
-};
