@@ -1,23 +1,16 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
-    },
-    { "src": "api2/api.js", "use": "@vercel/node" },
-    { "src": "api2/apii.js", "use": "@vercel/node" }
-  ],
-  "routes": [
-    { "src": "^/api-tron/(.*)$", "dest": "api2/api.js" },
-    { "src": "^/api-evm/(.*)$", "dest": "api2/apii.js" },
-    { "handle": "filesystem" },
-    { "src": "/.*", "dest": "/index.html" }
-  ],
   "functions": {
     "api2/**/*.js": {
       "runtime": "nodejs18.x"
     }
-  }
+  },
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static-build", "config": { "distDir": "dist" } }
+  ],
+  "routes": [
+    { "src": "/api2/(.*)", "dest": "/api2/$1.js" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ],
+  "framework": null
 }
