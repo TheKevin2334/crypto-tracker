@@ -10,33 +10,31 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  preview: {
-    port: 4173,
-    allowedHosts: [
-      "crypto-tracker-h3h5.onrender.com", // ✅ your Render domain
-      "localhost",
-    ],
-  },
   server: {
-    port: 5173,
-    allowedHosts: ["localhost"],
+    host: "0.0.0.0",
+    port: 4173,
     proxy: {
       "/api": {
-        target: "http://localhost:3000",
+        target: "http://localhost:10000", // TRON API
         changeOrigin: true,
       },
       "/api-evm": {
-        target: "http://localhost:3000",
-        changeOrigin: true,
-      },
-      "/api-ai": {
-        target: "http://localhost:3000",
+        target: "http://localhost:10001", // EVM API
         changeOrigin: true,
       },
       "/api-usdt": {
-        target: "http://localhost:3000",
+        target: "http://localhost:10000", // USDT (TRON port)
+        changeOrigin: true,
+      },
+      "/api-ai": {
+        target: "http://localhost:10000", // AI routes on TRON port
         changeOrigin: true,
       },
     },
+  },
+  preview: {
+    host: "0.0.0.0",
+    port: 4173,
+    allowedHosts: ["localhost", ".onrender.com"],
   },
 });

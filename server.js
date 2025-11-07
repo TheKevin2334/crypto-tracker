@@ -1,37 +1,20 @@
-// server.js
-import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
 import { spawn } from "child_process";
+import dotenv from "dotenv";
+dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const tronPort = process.env.PORT_TRON || 10000;
+const evmPort = process.env.PORT_EVM || 10001;
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Serve built frontend
-app.use(express.static(path.join(__dirname, "dist")));
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
+// Start TRON API
+const tronAPI = spawn("node", ["./api2/api.js"], {
+  env: { ...process.env, PORT: tronPort },
+  stdio: "inherit",
 });
+tronAPI.on("exit", (code) => console.log(`TRON API exited with code ${code}`));
 
-// Launch backend APIs
-function runAPI(name, file) {
-  console.log(`🚀 Starting ${name} (${file})...`);
-  const proc = spawn("node", [file], { stdio: "inherit" });
-  proc.on("close", (code) => console.log(`❌ ${name} exited (${code})`));
-}
-
-runAPI("TRON API", "./api2/api.js");
-runAPI("EVM API", "./api2/apii.js");
-
-// Catch-all route (React Router)
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
+// Start EVM API
+const evmAPI = spawn("node", ["./api2/apii.js"], {
+  env: { ...process.env, PORT: evmPort },
+  stdio: "inherit",
 });
-
-app.listen(PORT, () => {
-  console.log(`✅ Main server running on port ${PORT}`);
-});
+evmAPI.on("exit", (code) => console.log(`EVM API exited with code ${code}`));
