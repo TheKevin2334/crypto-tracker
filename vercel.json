@@ -5,12 +5,8 @@
       "runtime": "nodejs18.x"
     }
   },
-  "builds": [
-    { "src": "index.html", "use": "@vercel/static-build", "config": { "distDir": "dist" } }
-  ],
   "routes": [
     { "src": "/api2/(.*)", "dest": "/api2/$1.js" },
     { "src": "/(.*)", "dest": "/index.html" }
-  ],
-  "framework": null
+  ]
 }
