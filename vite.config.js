@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react(), componentTagger()],
   resolve: {
     alias: {
@@ -12,29 +12,44 @@ export default defineConfig({
   },
   server: {
     host: "0.0.0.0",
-    port: 4173,
+    port: 8080,
+    allowedHosts: [
+      "localhost",
+      "127.0.0.1",
+      // Allow any Render subdomain automatically
+      ".onrender.com",
+      "crypto-tracker-h3h5.onrender.com", // ✅ your Render domain explicitly
+    ],
     proxy: {
+      // Proxy all API requests starting with /api to btcindia
       "/api": {
-        target: "http://localhost:10000", // TRON API
+        target: "https://btcindia.vercel.app",
         changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api/, "/api"),
+      },
+      // Proxy all API requests starting with /api-usdt to usdtttindia
+      "/api-usdt": {
+        target: "https://usdtttindia.vercel.app",
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api-usdt/, "/api"),
       },
       "/api-evm": {
-        target: "http://localhost:10001", // EVM API
+        target: "https://btcindia.vercel.app",
         changeOrigin: true,
-      },
-      "/api-usdt": {
-        target: "http://localhost:10000", // USDT (TRON port)
-        changeOrigin: true,
-      },
-      "/api-ai": {
-        target: "http://localhost:10000", // AI routes on TRON port
-        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api-evm/, "/api"),
       },
     },
   },
   preview: {
-    host: "0.0.0.0",
-    port: 4173,
-    allowedHosts: ["localhost", ".onrender.com"],
+    port: 8080,
+    allowedHosts: [
+      "localhost",
+      "127.0.0.1",
+      ".onrender.com", // wildcard for all Render deployments
+      "crypto-tracker-h3h5.onrender.com", // ✅ allow your Render app in preview mode
+    ],
   },
-});
+}));
